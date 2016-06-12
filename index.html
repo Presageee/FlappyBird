@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Flappy Bird</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script type="text/javascript">
+        var ctx;
+        var brid;
+        var obj = [];
+        var bg;
+        var ttop;
+        var bottom;
+        var i_brid = "./img/brid.png";
+        var i_bg = "./img/bg.png";
+        var i_top = "./img/pp1.png";
+        var i_bottom = "./img/pp2.png";
+        var i_ibrid = new Image();
+        i_ibrid.src = i_brid;
+        var i_ibg = new Image();
+        i_ibg.src = i_bg;
+        var i_itop = new Image();
+        i_itop.src = i_top;
+        var i_ibottom = new Image();
+        i_ibottom.src = i_bottom;
+        var vx = 10;
+        function genObj() {
+            brid = new bridD(30, 235, 70, 80, i_brid);//550-80=470  400-70=330 
+            bg = new bgD(0, 0, 400, 550, i_bg);
+            ttop = new topP(350, -150, 150, 200, i_top);
+            bottom = new bottomP(350, 400, 100, 350, i_bottom);
+            //obj.push(new bgD(0, 0, 400, 550, i_bg));
+            //obj.push(new topP(350, 550, 150, 200, i_top));
+            //obj.push(new bottomP(350, 0, 150, 200, i_bottom));
+            //obj.push(new bridD(30, 235, 70, 80, i_brid));
+            obj.push(bg);
+            obj.push(ttop);
+            obj.push(bottom);
+            obj.push(brid);
+        }
+
+        function topP(x, y, width, height, img) {
+            this.x = x;
+            this.y = y;
+            this.width = width;
+            this.height = height;
+            this.img = img;
+            this.draw = drawTop;
+        }
+
+        function drawTop() {
+            //drawFuck(this.x, this.y, this.img, function () {});
+            //ctx.drawImage(i_itop, this.x, this.y);
+            var image = new Image();
+            image.src = this.img;
+            if (image.complete) {
+                ctx.drawImage(image, ttop.x, ttop.y);
+            }
+            image.onload = function () {
+                ctx.drawImage(image, ttop.x, ttop.y);
+            }
+        }
+
+        function bottomP(x, y, width, height, img) {
+            this.x = x;
+            this.y = y;
+            this.width = width;
+            this.height = height;
+            this.img = img;
+            this.draw = drawBottom;
+        }
+
+        function drawBottom() {
+            //drawFuck(this.x, this.y, this.img, function () {});
+            //ctx.drawImage(i_ibottom, this.x, this.y);
+            var image = new Image();
+            image.src = this.img;
+            if (image.complete) {
+                ctx.drawImage(image, bottom.x, bottom.y);
+            }
+            image.onload = function () {
+                ctx.drawImage(image, bottom.x, bottom.y);
+            }
+        }
+
+        function bridD(x, y, width, height, img) {
+            this.x = x;
+            this.y = y;
+            this.width = width;
+            this.height = height;
+            this.img = img;
+            this.draw = drawBrid;
+        }
+
+        function drawBrid(callback) {
+            //drawFuck(this.x, this.y, this.img, function () {});
+            //ctx.drawImage(i_ibrid, this.x, this.y);
+            var image = new Image();
+            image.src = this.img;
+            if (image.complete) {
+                ctx.drawImage(image, brid.x, brid.y);
+            }
+            image.onload = function () {
+                ctx.drawImage(image, brid.x, brid.y);
+            }
+        }
+        
+        function drawFuck(x , y, url, callback) {
+                        var image = new Image();
+            image.src = url;
+            
+            if (image.complete) {
+                ctx.drawImage(image, x, y);
+                //callback.call(image);
+                return;
+            }
+            image.onload = function () {
+                ctx.drawImage(image, x, y);
+                //callback.call(image);
+            }
+        }
+
+        function bgD(x, y, width, height, img) {
+            this.x = x;
+            this.y = y;
+            this.width = width;
+            this.height = height;
+            this.img = img;
+            this.draw = drawBg;
+        }
+
+        function drawBg() {
+            var image = new Image();
+            image.src = this.img;
+            if (image.complete) {
+                ctx.drawImage(image, this.x, this.y);
+            }
+            image.onload = function () {
+                ctx.drawImage(image, this.x, this.y);
+            }
+        }
+
+        function drawall() {
+            ctx.clearRect(0,0,400,600);
+            var i;
+            for (i = 0; i < obj.length; i++) {
+                obj[i].draw();
+                //console.log(obj[i].img);
+            }
+            move();
+        }
+
+
+        function move() {
+            // if ((brid.x + brid.width > ttop.x && brid.y < ttop.y + ttop.height) || (brid.x > ttop.x && brid.y < ttop.y + ttop.height)
+            //     || (brid.x + brid.width > bottom.x && brid.y + brid.height > bottom.y) 
+            //     || (brid.x > bottom.x && bottom.x && brid.y + brid.height > bottom.y )
+            //     || (brid.y + brid.height > 600)) {
+            //     //brid.x += vx;
+            //     ctx.clearRect(0, 0, 600, 400);
+            //     ctx.fillstyle = "rgb(255,255,255)";
+            //     ctx.fillText("night is coming, u will go die");
+            //} else { 
+                //up down
+
+                if (ttop.x + ttop.width > 0) {
+                    ttop.x -= vx;
+                    bottom.x -= vx;
+                } else {
+                    ttop.x = 400;
+                    bottom.x = 400;
+                    var magic = 200 + Math.random() * 300;
+                    bottom.y = magic;
+                    ttop.y = magic - 200 - 350;
+                }
+            //}
+        }
+
+        function init() {
+            ctx = document.getElementById('canvas').getContext('2d');
+            //var im = new Image();
+            //im.src = "./img/bg.png";
+            //ctx.drawImage(im, 0, 0);
+            //ctx.fillstyle = "rgb(255,255,255)";
+
+            //ctx.draw
+            genObj();
+            drawall();
+            var t = setInterval(drawall, 80);
+        }
+    </script>
+    </head>
+    <body onLoad="init();">
+        <canvas id="canvas" style="margin-left:150px" height="600" width="400">
+            fuckfuckfuck
+        </canvas>
+    </body>
+</html>
