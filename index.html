@@ -10,6 +10,7 @@
         var bg;
         var ttop;
         var bottom;
+        var tt;
         var i_brid = "./img/brid.png";
         var i_bg = "./img/bg.png";
         var i_top = "./img/pp1.png";
@@ -22,7 +23,11 @@
         i_itop.src = i_top;
         var i_ibottom = new Image();
         i_ibottom.src = i_bottom;
-        var vx = 10;
+        var vx = 10;//horizontal speed
+        var v1 = 10;//constant speed
+        var downV = 2;//falling speed
+        var n = 1;//simulation of gravity
+        var v2;
         function genObj() {
             brid = new bridD(30, 235, 70, 80, i_brid);//550-80=470  400-70=330 
             bg = new bgD(0, 0, 400, 550, i_bg);
@@ -149,19 +154,40 @@
             move();
         }
 
+        function keyup(e){
+            var e = e||event;
+               var key = e.keyCode||e.which||e.charCode;
+               switch (key){
+                case 32:
+                    console.log(1);
+                    brid.y -= 80;
+                    n = 1;
+                    break;
+            }
+        }   
 
+        function fuckdrawText () {
+                //ctx.clearRect(0, 0, 600, 400);
+                ctx.fillstyle = "rgb(255,255,255)";
+                ctx.fillText("night is coming, u will go die", 0, 300);
+        }
         function move() {
-            // if ((brid.x + brid.width > ttop.x && brid.y < ttop.y + ttop.height) || (brid.x > ttop.x && brid.y < ttop.y + ttop.height)
-            //     || (brid.x + brid.width > bottom.x && brid.y + brid.height > bottom.y) 
-            //     || (brid.x > bottom.x && bottom.x && brid.y + brid.height > bottom.y )
-            //     || (brid.y + brid.height > 600)) {
-            //     //brid.x += vx;
-            //     ctx.clearRect(0, 0, 600, 400);
-            //     ctx.fillstyle = "rgb(255,255,255)";
-            //     ctx.fillText("night is coming, u will go die");
-            //} else { 
+            if ((brid.x + brid.width > ttop.x && brid.y < ttop.y + ttop.height) || (brid.x > ttop.x && brid.y < ttop.y + ttop.height)
+                || (brid.x + brid.width > bottom.x && brid.y + brid.height > bottom.y) 
+                || (brid.x > bottom.x && bottom.x && brid.y + brid.height > bottom.y )
+                || (brid.y + brid.height > 600)) {
+                //brid.x += vx;
+                clearInterval(tt);
+                // ctx.clearRect(0, 0, 600, 400);
+                // ctx.fillstyle = "rgb(255,255,255)";
+                // ctx.fillText("night is coming, u will go die", 0, 300);
+                var d = setInterval(fuckdrawText, 80);
+                return;
+            } else { 
                 //up down
-
+                v2 = v1 + downV * n;
+                brid.y += (v2 + v1) * 0.5;
+                n++;
                 if (ttop.x + ttop.width > 0) {
                     ttop.x -= vx;
                     bottom.x -= vx;
@@ -172,7 +198,7 @@
                     bottom.y = magic;
                     ttop.y = magic - 200 - 350;
                 }
-            //}
+            }
         }
 
         function init() {
@@ -183,9 +209,10 @@
             //ctx.fillstyle = "rgb(255,255,255)";
 
             //ctx.draw
+            document.onkeyup = keyup;
             genObj();
             drawall();
-            var t = setInterval(drawall, 80);
+            tt = setInterval(drawall, 80);
         }
     </script>
     </head>
